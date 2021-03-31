@@ -7,6 +7,12 @@
 #include <map>
 #include <forward_list>
 
+template struct any_iterator<int, std::input_iterator_tag>;
+template struct any_iterator<int, std::output_iterator_tag>;
+template struct any_iterator<int, std::forward_iterator_tag>;
+template struct any_iterator<int, std::bidirectional_iterator_tag>;
+template struct any_iterator<int, std::random_access_iterator_tag>;
+
 std::vector<int> a = {4, 8, 15, 16, 23, 42};
 
 template<typename T>
