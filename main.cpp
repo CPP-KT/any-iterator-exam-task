@@ -1,20 +1,28 @@
 #include "gtest/gtest.h"
 
 #include "any_iterator.h"
-#include <iterator>
 
 #include <vector>
-#include <map>
 #include <forward_list>
 
 template struct any_iterator<int, std::forward_iterator_tag>;
 template struct any_iterator<int, std::bidirectional_iterator_tag>;
 template struct any_iterator<int, std::random_access_iterator_tag>;
 
-std::vector<int> a = {4, 8, 15, 16, 23, 42};
+std::vector a = {4, 8, 15, 16, 23, 42};
 
 template<typename T>
 using random_iterator = any_iterator<T, std::random_access_iterator_tag>;
+
+template<typename Iter>
+concept decrementable = requires (Iter x) {
+    x--;
+    --x;
+    { x-- } -> std::same_as<Iter>;
+    { --x } -> std::same_as<Iter&>;
+};
+
+static_assert(std::random_access_iterator<random_iterator<int>>);
 
 TEST(random, simple) {
     random_iterator<int> it(a.begin() + 1);
@@ -92,6 +100,10 @@ TEST(random, bad_and_arrow) {
 template<typename T>
 using bi_iterator = any_iterator<T, std::bidirectional_iterator_tag>;
 
+static_assert(std::bidirectional_iterator<bi_iterator<int>>);
+static_assert(!std::random_access_iterator<bi_iterator<int>>);
+static_assert(decrementable<bi_iterator<int>>);
+
 std::set<double> b = {1.1, 3.14, 2.7, 5.782};
 
 TEST(bidirectional, simple) {
@@ -127,6 +139,10 @@ TEST(bidirectional, operations) {
 
 template <typename T>
 using fw_iterator = any_iterator<T, std::forward_iterator_tag>;
+
+static_assert(std::forward_iterator<fw_iterator<int>>);
+static_assert(!std::bidirectional_iterator<fw_iterator<int>>);
+static_assert(!decrementable<fw_iterator<int>>);
 
 std::forward_list<int> c = {1, 2, 3};
 
