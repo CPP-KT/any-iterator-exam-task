@@ -4,6 +4,8 @@
 
 #include <vector>
 #include <forward_list>
+#include <concepts>
+#include <iterator>
 
 template struct any_iterator<int, std::forward_iterator_tag>;
 template struct any_iterator<int, std::bidirectional_iterator_tag>;
