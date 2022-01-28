@@ -153,3 +153,117 @@ TEST(forward, simple) {
     ASSERT_EQ(*it, 2);
 }
 
+struct copy_move_counter {
+  constexpr copy_move_counter() = default;
+
+  copy_move_counter(copy_move_counter const& O) {
+    n_copies++;
+  }
+
+  copy_move_counter(copy_move_counter&& O) noexcept {
+    n_moves++;
+  }
+
+  copy_move_counter& operator=(copy_move_counter const& O) {
+    n_copies++;
+    return *this;
+  }
+
+  copy_move_counter& operator=(copy_move_counter&& O) noexcept {
+    n_moves++;
+    return *this;
+  }
+
+  bool operator==(copy_move_counter const& other) const {
+    return true;
+  }
+
+  copy_move_counter& operator++() { return *this; }
+  copy_move_counter operator++(int) { return *this; }
+
+  copy_move_counter& operator--() { return *this; }
+  copy_move_counter operator--(int) { return *this; }
+
+  int& operator*() const {
+    return magic;
+  }
+
+  int* operator->() const {
+    return &magic;
+  }
+
+  copy_move_counter& operator+=(ptrdiff_t) { return *this; }
+  copy_move_counter& operator-=(ptrdiff_t) { return *this; }
+
+  copy_move_counter operator+(ptrdiff_t) const  { return {}; }
+  ptrdiff_t operator-(copy_move_counter const& O) const { return 0; }
+
+  bool operator<(copy_move_counter const& O) const {
+    return false;
+  }
+
+  static int magic;
+  static thread_local size_t n_copies;
+  static thread_local size_t n_moves;
+};
+
+int copy_move_counter::magic = 17;
+thread_local size_t copy_move_counter::n_copies = 0;
+thread_local size_t copy_move_counter::n_moves = 0;
+
+template <typename T>
+class FwTypeFixture : public testing::Test {};
+
+using FwIteratorTestTags = ::testing::Types<std::forward_iterator_tag,
+                                            std::bidirectional_iterator_tag,
+                                            std::random_access_iterator_tag>;
+
+TYPED_TEST_SUITE(FwTypeFixture, FwIteratorTestTags);
+
+TYPED_TEST(FwTypeFixture, FwIterCopyChecks) {
+  auto const initial_copies = copy_move_counter::n_copies;
+
+  any_iterator<int, TypeParam> iter = copy_move_counter(), other;
+  auto iter2 = iter;
+  ASSERT_EQ(copy_move_counter::n_copies, initial_copies + 1);
+  auto iter3(iter2);
+  ASSERT_EQ(copy_move_counter::n_copies, initial_copies + 2);
+  any_iterator<int, TypeParam> iter4;
+  iter4 = iter3;
+  ASSERT_EQ(copy_move_counter::n_copies, initial_copies + 3);
+  iter4++;
+  ASSERT_EQ(copy_move_counter::n_copies, initial_copies + 4);
+  ++iter4;
+  ASSERT_EQ(copy_move_counter::n_copies, initial_copies + 4);
+  iter3 = iter3;
+  ASSERT_EQ(copy_move_counter::n_copies, initial_copies + 5);
+}
+
+TYPED_TEST(FwTypeFixture, FwIterMoveChecks) {
+  any_iterator<int, TypeParam> iter = copy_move_counter(), other;
+
+  auto const initial_moves = copy_move_counter::n_moves;
+  iter = std::move(iter);
+  ASSERT_EQ(copy_move_counter::n_moves, initial_moves);
+  other = std::move(iter);
+  ASSERT_EQ(copy_move_counter::n_moves, initial_moves + 1);
+}
+
+template <typename T>
+class BiTypeFixture : public testing::Test {};
+
+using BiIteratorTestTags = ::testing::Types<std::bidirectional_iterator_tag,
+                                            std::random_access_iterator_tag>;
+
+TYPED_TEST_SUITE(BiTypeFixture, BiIteratorTestTags);
+
+TYPED_TEST(BiTypeFixture, BiIterCopyChecks) {
+  auto const initial_copies = copy_move_counter::n_copies;
+
+  any_iterator<int, TypeParam> iter = copy_move_counter();
+  ASSERT_EQ(copy_move_counter::n_copies, initial_copies);
+  iter--;
+  ASSERT_EQ(copy_move_counter::n_copies, initial_copies + 1);
+  --iter;
+  ASSERT_EQ(copy_move_counter::n_copies, initial_copies + 1);
+}
