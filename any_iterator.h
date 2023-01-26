@@ -21,7 +21,7 @@ struct any_iterator {
 
   void swap(any_iterator& other) noexcept;
 
-  template<typename It>
+  template <typename It>
   any_iterator& operator=(It it);
 
   T const& operator*() const;
@@ -33,39 +33,49 @@ struct any_iterator {
   any_iterator& operator++() &;
   any_iterator operator++(int) &;
 
+  template <typename TT, typename TTag>
+  friend bool operator==(any_iterator<TT, TTag> const& a,
+                         any_iterator<TT, TTag> const& b);
 
-  template<typename TT, typename TTag>
-  friend bool operator==(any_iterator<TT, TTag> const& a, any_iterator<TT, TTag> const& b);
-
-  template<typename TT, typename TTag>
-  friend bool operator!=(any_iterator<TT, TTag> const& a, any_iterator<TT, TTag> const& b);
-
+  template <typename TT, typename TTag>
+  friend bool operator!=(any_iterator<TT, TTag> const& a,
+                         any_iterator<TT, TTag> const& b);
 
   // note: next operators must compile ONLY for appropriate iterator tags
 
-  template<typename TT, typename TTag>
+  template <typename TT, typename TTag>
   friend any_iterator<TT, TTag>& operator--(any_iterator<TT, TTag>&);
 
-  template<typename TT, typename TTag>
+  template <typename TT, typename TTag>
   friend any_iterator<TT, TTag> operator--(any_iterator<TT, TTag>&, int);
 
-  template<typename TT, typename TTag>
-  friend any_iterator<TT, TTag>& operator+=(any_iterator<TT, TTag>&, typename any_iterator<TT, TTag>::difference_type);
+  template <typename TT, typename TTag>
+  friend any_iterator<TT, TTag>&
+  operator+=(any_iterator<TT, TTag>&,
+             typename any_iterator<TT, TTag>::difference_type);
 
-  template<typename TT, typename TTag>
-  friend any_iterator<TT, TTag>& operator-=(any_iterator<TT, TTag>&, typename any_iterator<TT, TTag>::difference_type);
+  template <typename TT, typename TTag>
+  friend any_iterator<TT, TTag>&
+  operator-=(any_iterator<TT, TTag>&,
+             typename any_iterator<TT, TTag>::difference_type);
 
-  template<typename TT, typename TTag>
-  friend any_iterator<TT, TTag> operator+(any_iterator<TT, TTag>, typename any_iterator<TT, TTag>::difference_type);
+  template <typename TT, typename TTag>
+  friend any_iterator<TT, TTag>
+  operator+(any_iterator<TT, TTag>,
+            typename any_iterator<TT, TTag>::difference_type);
 
-  template<typename TT, typename TTag>
-  friend any_iterator<TT, TTag> operator-(any_iterator<TT, TTag>, typename any_iterator<TT, TTag>::difference_type);
+  template <typename TT, typename TTag>
+  friend any_iterator<TT, TTag>
+  operator-(any_iterator<TT, TTag>,
+            typename any_iterator<TT, TTag>::difference_type);
 
-  template<typename TT, typename TTag>
-  friend bool operator<(any_iterator<TT, TTag> const& a, any_iterator<TT, TTag> const& b);
+  template <typename TT, typename TTag>
+  friend bool operator<(any_iterator<TT, TTag> const& a,
+                        any_iterator<TT, TTag> const& b);
 
-  template<typename TT, typename TTag>
-  friend typename any_iterator<TT, TTag>::difference_type operator-(any_iterator<TT, TTag> const& a, any_iterator<TT, TTag> const& b);
+  template <typename TT, typename TTag>
+  friend typename any_iterator<TT, TTag>::difference_type
+  operator-(any_iterator<TT, TTag> const& a, any_iterator<TT, TTag> const& b);
 
   ~any_iterator();
 };
