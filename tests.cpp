@@ -219,6 +219,26 @@ struct copy_move_counter {
   bool operator<(copy_move_counter const& O) const {
     return false;
   }
+  bool operator<=(copy_move_counter const& O) const {
+    return false;
+  }
+  bool operator>(copy_move_counter const& O) const {
+    return false;
+  }
+  bool operator>=(copy_move_counter const& O) const {
+    return false;
+  }
+  bool operator!=(copy_move_counter const& other) const {
+    return true;
+  }
+
+  int& operator[](ptrdiff_t i) {
+    return magic;
+  }
+
+  int& operator[](ptrdiff_t i) const {
+    return magic;
+  }
 
   static int magic;
   static thread_local size_t n_copies;
