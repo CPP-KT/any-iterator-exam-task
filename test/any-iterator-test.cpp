@@ -158,25 +158,25 @@ TEST(forward, simple) {
 struct copy_move_counter {
   constexpr copy_move_counter() = default;
 
-  copy_move_counter(const copy_move_counter& O) {
+  copy_move_counter(const copy_move_counter&) {
     n_copies++;
   }
 
-  copy_move_counter(copy_move_counter&& O) noexcept {
+  copy_move_counter(copy_move_counter&&) noexcept {
     n_moves++;
   }
 
-  copy_move_counter& operator=(const copy_move_counter& O) {
+  copy_move_counter& operator=(const copy_move_counter&) {
     n_copies++;
     return *this;
   }
 
-  copy_move_counter& operator=(copy_move_counter&& O) noexcept {
+  copy_move_counter& operator=(copy_move_counter&&) noexcept {
     n_moves++;
     return *this;
   }
 
-  bool operator==(const copy_move_counter& other) const {
+  bool operator==(const copy_move_counter&) const {
     return true;
   }
 
@@ -216,35 +216,35 @@ struct copy_move_counter {
     return {};
   }
 
-  ptrdiff_t operator-(const copy_move_counter& O) const {
+  ptrdiff_t operator-(const copy_move_counter&) const {
     return 0;
   }
 
-  bool operator<(const copy_move_counter& O) const {
+  bool operator<(const copy_move_counter&) const {
     return false;
   }
 
-  bool operator<=(const copy_move_counter& O) const {
+  bool operator<=(const copy_move_counter&) const {
     return false;
   }
 
-  bool operator>(const copy_move_counter& O) const {
+  bool operator>(const copy_move_counter&) const {
     return false;
   }
 
-  bool operator>=(const copy_move_counter& O) const {
+  bool operator>=(const copy_move_counter&) const {
     return false;
   }
 
-  bool operator!=(const copy_move_counter& other) const {
+  bool operator!=(const copy_move_counter&) const {
     return true;
   }
 
-  int& operator[](ptrdiff_t i) {
+  int& operator[](ptrdiff_t) {
     return magic;
   }
 
-  int& operator[](ptrdiff_t i) const {
+  int& operator[](ptrdiff_t) const {
     return magic;
   }
 
