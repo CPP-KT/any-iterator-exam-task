@@ -1,6 +1,5 @@
-#include "gtest/gtest.h"
-
 #include "any_iterator.h"
+#include "gtest/gtest.h"
 
 #include <concepts>
 #include <forward_list>
@@ -158,7 +157,7 @@ TEST(forward, simple) {
 struct copy_move_counter {
   constexpr copy_move_counter() = default;
 
-  copy_move_counter(copy_move_counter const& O) {
+  copy_move_counter(const copy_move_counter& O) {
     n_copies++;
   }
 
@@ -166,7 +165,7 @@ struct copy_move_counter {
     n_moves++;
   }
 
-  copy_move_counter& operator=(copy_move_counter const& O) {
+  copy_move_counter& operator=(const copy_move_counter& O) {
     n_copies++;
     return *this;
   }
@@ -176,13 +175,14 @@ struct copy_move_counter {
     return *this;
   }
 
-  bool operator==(copy_move_counter const& other) const {
+  bool operator==(const copy_move_counter& other) const {
     return true;
   }
 
   copy_move_counter& operator++() {
     return *this;
   }
+
   copy_move_counter operator++(int) {
     return *this;
   }
@@ -190,6 +190,7 @@ struct copy_move_counter {
   copy_move_counter& operator--() {
     return *this;
   }
+
   copy_move_counter operator--(int) {
     return *this;
   }
@@ -205,6 +206,7 @@ struct copy_move_counter {
   copy_move_counter& operator+=(ptrdiff_t) {
     return *this;
   }
+
   copy_move_counter& operator-=(ptrdiff_t) {
     return *this;
   }
@@ -212,23 +214,28 @@ struct copy_move_counter {
   copy_move_counter operator+(ptrdiff_t) const {
     return {};
   }
-  ptrdiff_t operator-(copy_move_counter const& O) const {
+
+  ptrdiff_t operator-(const copy_move_counter& O) const {
     return 0;
   }
 
-  bool operator<(copy_move_counter const& O) const {
+  bool operator<(const copy_move_counter& O) const {
     return false;
   }
-  bool operator<=(copy_move_counter const& O) const {
+
+  bool operator<=(const copy_move_counter& O) const {
     return false;
   }
-  bool operator>(copy_move_counter const& O) const {
+
+  bool operator>(const copy_move_counter& O) const {
     return false;
   }
-  bool operator>=(copy_move_counter const& O) const {
+
+  bool operator>=(const copy_move_counter& O) const {
     return false;
   }
-  bool operator!=(copy_move_counter const& other) const {
+
+  bool operator!=(const copy_move_counter& other) const {
     return true;
   }
 
@@ -253,13 +260,12 @@ template <typename T>
 class FwTypeFixture : public testing::Test {};
 
 using FwIteratorTestTags =
-    ::testing::Types<std::forward_iterator_tag, std::bidirectional_iterator_tag,
-                     std::random_access_iterator_tag>;
+    ::testing::Types<std::forward_iterator_tag, std::bidirectional_iterator_tag, std::random_access_iterator_tag>;
 
 TYPED_TEST_SUITE(FwTypeFixture, FwIteratorTestTags);
 
 TYPED_TEST(FwTypeFixture, FwIterCopyChecks) {
-  auto const initial_copies = copy_move_counter::n_copies;
+  const auto initial_copies = copy_move_counter::n_copies;
 
   any_iterator<int, TypeParam> iter = copy_move_counter(), other;
   auto iter2 = iter;
@@ -280,7 +286,7 @@ TYPED_TEST(FwTypeFixture, FwIterCopyChecks) {
 TYPED_TEST(FwTypeFixture, FwIterMoveChecks) {
   any_iterator<int, TypeParam> iter = copy_move_counter(), other;
 
-  auto const initial_moves = copy_move_counter::n_moves;
+  const auto initial_moves = copy_move_counter::n_moves;
   iter = std::move(iter);
   ASSERT_EQ(copy_move_counter::n_moves, initial_moves);
   other = std::move(iter);
@@ -290,13 +296,12 @@ TYPED_TEST(FwTypeFixture, FwIterMoveChecks) {
 template <typename T>
 class BiTypeFixture : public testing::Test {};
 
-using BiIteratorTestTags = ::testing::Types<std::bidirectional_iterator_tag,
-                                            std::random_access_iterator_tag>;
+using BiIteratorTestTags = ::testing::Types<std::bidirectional_iterator_tag, std::random_access_iterator_tag>;
 
 TYPED_TEST_SUITE(BiTypeFixture, BiIteratorTestTags);
 
 TYPED_TEST(BiTypeFixture, BiIterCopyChecks) {
-  auto const initial_copies = copy_move_counter::n_copies;
+  const auto initial_copies = copy_move_counter::n_copies;
 
   any_iterator<int, TypeParam> iter = copy_move_counter();
   ASSERT_EQ(copy_move_counter::n_copies, initial_copies);
