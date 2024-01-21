@@ -7,9 +7,9 @@
 #include <iterator>
 #include <vector>
 
-template struct any_iterator<int, std::forward_iterator_tag>;
-template struct any_iterator<int, std::bidirectional_iterator_tag>;
-template struct any_iterator<int, std::random_access_iterator_tag>;
+template class any_iterator<int, std::forward_iterator_tag>;
+template class any_iterator<int, std::bidirectional_iterator_tag>;
+template class any_iterator<int, std::random_access_iterator_tag>;
 
 std::vector a = {4, 8, 15, 16, 23, 42};
 
