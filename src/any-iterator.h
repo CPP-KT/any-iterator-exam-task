@@ -67,6 +67,6 @@ public:
   friend bool operator<(const any_iterator<TT, TTag>& a, const any_iterator<TT, TTag>& b);
 
   template <typename TT, typename TTag>
-  friend typename any_iterator<TT, TTag>::difference_type operator-(const any_iterator<TT, TTag>& a,
-                                                                    const any_iterator<TT, TTag>& b);
+  friend typename any_iterator<TT, TTag>::difference_type
+  operator-(const any_iterator<TT, TTag>& a, const any_iterator<TT, TTag>& b);
 };

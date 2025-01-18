@@ -17,7 +17,7 @@ template <typename T>
 using random_iterator = any_iterator<T, std::random_access_iterator_tag>;
 
 template <typename Iter>
-concept decrementable = requires(Iter x) {
+concept decrementable = requires (Iter x) {
   x--;
   --x;
   { x-- } -> std::same_as<Iter>;
