@@ -11,6 +11,8 @@ template class any_iterator<int, std::forward_iterator_tag>;
 template class any_iterator<int, std::bidirectional_iterator_tag>;
 template class any_iterator<int, std::random_access_iterator_tag>;
 
+namespace {
+
 std::vector a = {4, 8, 15, 16, 23, 42};
 
 template <typename T>
@@ -311,3 +313,5 @@ TYPED_TEST(BiTypeFixture, BiIterCopyChecks) {
   --iter;
   ASSERT_EQ(copy_move_counter::n_copies, initial_copies + 1);
 }
+
+} // namespace
